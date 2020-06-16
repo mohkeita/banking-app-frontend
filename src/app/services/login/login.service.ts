@@ -16,6 +16,8 @@ export class LoginService {
   url: any = 'http://localhost:4200/login';
   errorSubject: any = new BehaviorSubject<any>(null);
   errorMessage: any = this.errorSubject.asObservable();
+  userSubject: any = new BehaviorSubject<any>(null);
+  user: any = this.userSubject.asObservable();
 
   constructor(private http: HttpClient,
               private router: Router, ) { }
@@ -25,6 +27,9 @@ export class LoginService {
       if (res && res.jwt) {
         sessionStorage.setItem('jwt', res.jwt);
         this.errorSubject.next(null);
+        if (res.data) {
+          this.userSubject.next(res.data);
+        }
         this.router.navigateByUrl('dashboard');
       } else if (res.Message) {
         this.errorSubject.next(res.Message);
